@@ -102,11 +102,12 @@ int main(int argc, char **argv)
         goto exit;
     }
 
-#ifndef ANDROID
-    // On Linux/Buildroot platforms like Raspberry Pi and Nintendo Switch, it
-    // is desirable for the brightness to be restored from config. On Android
-    // though, the brightness will be set externally so changing it here is
-    // probably not desirable.
+    // For certain devices (Raspberry Pi, Nintendo Switch), it is desirable
+    // for Vanilla to control the screen brightness. These devices are denoted
+    // by not defining VANILLA_GUI_ENABLE_WINDOWED. However mobile platforms
+    // like Android and iOS may also not define VANILLA_GUI_ENABLE_WINDOWED, and
+    // they handle brightness themselves, so we should skip those platforms.
+#if !defined(VANILLA_GUI_ENABLE_WINDOWED) && !defined(ANDROID) && (!defined(TARGET_OS_IOS) || TARGET_OS_IOS == 0)
     vui_brightness_set(vui, vpi_config.screen_brightness);
 #endif
 
